@@ -19,9 +19,11 @@ docs:
         url: /pages/2015/
       - title: "2014"
         url: /pages/2014/
-      - title: "the last 2 years"
+      - title: "2013"
+        url: /pages/2013/
+      - title: "The last 2 years"
         url: /pages/2/
-      - title: "the last 5 years"
+      - title: "The last 5 years"
         url: /pages/5/
-      - title: "all 2013-2022"
+      - title: "From 2013"
         url: /pages/all/
