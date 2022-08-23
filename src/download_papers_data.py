@@ -125,3 +125,4 @@ with sqlite3.connect(DATABASE_FILE_NAME) as con:
     for row in rows:
         print(row)
     # TODO find a way to provide the missing papers (query SS by DOI or arXiv url?)
+    # maybe search in smeantic API with name and select the first result if it's an exact match

@@ -1,4 +1,4 @@
-docs:
+scope_nav:
   - title: Scope
     children:
       - title: "2022"
@@ -27,3 +27,6 @@ docs:
         url: /pages/5/
       - title: "From 2013"
         url: /pages/all/
+main:
+  - title: "About"
+    url: /about/

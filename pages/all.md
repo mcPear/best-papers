@@ -1,5 +1,4 @@
 ---
-layout: single
 title: From 2013
 permalink: /pages/all/
 ---

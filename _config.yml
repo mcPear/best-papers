@@ -19,46 +19,57 @@
 # in the templates via {{ site.myvariable }}.
 
 title: The best NLP papers
-email: your-email@example.com
-description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username: jekyll
+name: "Maciej Gruszczyński"
+email: maciek.gruszka@gmail.com
+description: A charmingly simple website serving the best NLP papers.
+baseurl: "/best-papers"
+url: "https://best-papers.github.io"
+repository: "mcPear/best-papers"
+github_username: mcPear
+# logo: "/assets/images/88x88.png" TODO emoticon https://gist.github.com/rxaviers/7360908
+# TODO staticman comments
+# TODO analytics, SEO https://mmistakes.github.io/minimal-mistakes/docs/configuration/#seo-social-sharing-and-analytics-settings
+
+author:
+  name: "Maciej Gruszczyński"
+  # avatar: "/assets/images/bio-photo.jpg"
+  bio: "AI practicioner"
+  location: "Poland"
+  links:
+    - label: "best-papers"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mcPear/best-papers"
+    - label: "Linkedin"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
+
+footer:
+  links:
+    - label: "best-papers"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mcPear/best-papers"
+    - label: "Linkedin"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
+
+atom_feed:
+  hide: true
 
 # Build settings
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: "contrast"
-plugins:
-  - jekyll-feed
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+
+exclude:
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
 
 defaults:
-  # _docs
   - scope:
       path: ""
-      # type: docs
     values:
+      layout: single
       sidebar:
-        nav: "docs"
+        nav: "scope_nav"
