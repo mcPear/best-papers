@@ -3,18 +3,30 @@ import json
 from src.constants import *
 
 with sqlite3.connect(DATABASE_FILE_NAME) as con:
-    all_json_rows = []
-    for year in range(2013, 2022 + 1):
+    for scope, name in [
+        ("= 2013", 2013),
+        ("= 2014", 2014),
+        ("= 2015", 2015),
+        ("= 2016", 2016),
+        ("= 2017", 2017),
+        ("= 2018", 2018),
+        ("= 2019", 2019),
+        ("= 2020", 2020),
+        ("= 2021", 2021),
+        ("= 2022", 2022),
+        (">= 2021", 2),
+        (">= 2018", 5),
+        (">= 2013", "all"),
+    ]:  # TODO implement it dependent on the current year
         cur = con.cursor()
         cur.execute(
-            f"SELECT * FROM papers where papers.year = {year} order by citation_count desc limit 20"
+            f"SELECT * FROM papers where papers.year {scope} order by citation_count desc limit 100"  # FIXME there's no limit for e.g. the last 2 years scope, handle this somehow, maybe make separate data file per scope
         )
         rows = cur.fetchall()
         json_rows = [
-            {"url": url, "year": year, "title": title, "cites": cites}
+            {"url": url, "title": title, "cites": cites}
             for url, year, title, cites in rows
         ]
-        all_json_rows.extend(json_rows)
-    with open("_data/papers.json", "w") as f:
-        json.dump(all_json_rows, f)
+        with open(f"_data/papers_{name}.json", "w") as f:
+            json.dump(json_rows, f)
     con.commit()

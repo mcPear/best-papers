@@ -32,25 +32,39 @@ github_username: mcPear
 
 author:
   name: "Maciej Gruszczyński"
-  # avatar: "/assets/images/bio-photo.jpg"
-  bio: "AI practicioner"
+  avatar: "/assets/profile.jpeg"
+  bio: "ML practitioner, always willing to talk."
   location: "Poland"
+  # buymeacoffee: "https://www.buymeacoffee.com/mcPear"
   links:
-    - label: "best-papers"
+    - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/mcPear/best-papers"
     - label: "Linkedin"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
+    - label: "Mail"
+      icon: "fa fa-fw fa-envelope"
+      url: "mailto: maciek.gruszka@gmail.com"
+    - label: "Buy Me a Coffee"
+      icon: "fa fa-fw fa-coffee"
+      url: "https://www.buymeacoffee.com/mcPear"
 
 footer:
+  # buymeacoffee: "https://www.buymeacoffee.com/mcPear"
   links:
-    - label: "best-papers"
+    - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/mcPear/best-papers"
     - label: "Linkedin"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
+    - label: "Mail"
+      icon: "fa fa-fw fa-envelope"
+      url: "mailto: maciek.gruszka@gmail.com"
+    - label: "Buy Me a Coffee"
+      icon: "fa fa-fw fa-coffee"
+      url: "https://www.buymeacoffee.com/mcPear"
 
 atom_feed:
   hide: true
@@ -68,7 +82,7 @@ exclude:
 
 defaults:
   - scope:
-      path: ""
+      path: "pages"
     values:
       layout: single
       sidebar:
