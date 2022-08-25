@@ -20,7 +20,7 @@ with sqlite3.connect(DATABASE_FILE_NAME) as con:
     ]:  # TODO implement it dependent on the current year
         cur = con.cursor()
         cur.execute(
-            f"SELECT * FROM papers where papers.year {scope} order by citation_count desc limit 100"  # FIXME there's no limit for e.g. the last 2 years scope, handle this somehow, maybe make separate data file per scope
+            f"SELECT * FROM papers where papers.year {scope} order by citation_count desc limit 100"
         )
         rows = cur.fetchall()
         json_rows = [
