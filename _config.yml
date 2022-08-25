@@ -26,7 +26,7 @@ baseurl: "/best-papers"
 url: "https://best-papers.github.io"
 repository: "mcPear/best-papers"
 github_username: mcPear
-logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
+# logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
 # TODO staticman comments
 # TODO analytics, SEO https://mmistakes.github.io/minimal-mistakes/docs/configuration/#seo-social-sharing-and-analytics-settings
 
@@ -70,7 +70,7 @@ atom_feed:
   hide: true
 
 # Build settings
-theme: minimal-mistakes-jekyll
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 minimal_mistakes_skin: "contrast"
 
 exclude:
@@ -87,3 +87,6 @@ defaults:
       layout: single
       sidebar:
         nav: "scope_nav"
+
+plugins:
+  - jekyll-include-cache
