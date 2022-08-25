@@ -26,7 +26,7 @@ baseurl: "/best-papers"
 url: "https://best-papers.github.io"
 repository: "mcPear/best-papers"
 github_username: mcPear
-# logo: ":star:"
+logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
 # TODO staticman comments
 # TODO analytics, SEO https://mmistakes.github.io/minimal-mistakes/docs/configuration/#seo-social-sharing-and-analytics-settings
 
