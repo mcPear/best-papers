@@ -22,8 +22,7 @@ title: The best NLP papers
 name: "Maciej Gruszczyński"
 email: maciek.gruszka@gmail.com
 description: A charmingly simple website serving the best NLP papers.
-baseurl: "/best-papers"
-url: "https://best-papers.github.io"
+url: "https://thebestnlppapers.com"
 repository: "mcPear/best-papers"
 github_username: mcPear
 # logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
