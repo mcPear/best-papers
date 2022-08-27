@@ -2,6 +2,11 @@ import sqlite3
 import json
 from src.constants import *
 
+
+def unescape_string(text):
+    return text.replace("''", "'")
+
+
 with sqlite3.connect(DATABASE_FILE_NAME) as con:
     for scope, name in [
         ("= 2013", 2013),
@@ -24,7 +29,7 @@ with sqlite3.connect(DATABASE_FILE_NAME) as con:
         )
         rows = cur.fetchall()
         json_rows = [
-            {"url": url, "title": title, "cites": cites}
+            {"url": url, "title": unescape_string(title), "cites": cites}
             for url, year, title, cites in rows
         ]
         with open(f"_data/papers_{name}.json", "w") as f:
