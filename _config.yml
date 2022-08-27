@@ -27,7 +27,6 @@ repository: "mcPear/best-papers"
 github_username: mcPear
 # logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
 # TODO staticman comments
-# TODO analytics, SEO https://mmistakes.github.io/minimal-mistakes/docs/configuration/#seo-social-sharing-and-analytics-settings
 
 author:
   name: "Maciej Gruszczyński"
@@ -89,3 +88,8 @@ defaults:
 
 plugins:
   - jekyll-include-cache
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-VQWRT3PKWG"
