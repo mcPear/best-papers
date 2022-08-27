@@ -4,14 +4,17 @@ title: From 2013
 permalink: /pages/all/
 ---
 
+<span>Papers are ordered by citation counts.</span>
+
 <ul>
-<!-- TODO generate pages and navigation https://jekyllrb.com/docs/plugins/generators/ or hardcode everything to deploy faster - better -->
-<!-- TODO legend: Title Citations with hyperlink to citations disclaimer -->
-    {% for paper in site.data.papers_all %}
-      <li>
-        <a href="{{ paper.url }}">
-            {{ paper.title }}
-        </a> {{ paper.cites }}
-      </li>
-    {% endfor %}
+
+{% for paper in site.data.papers_all %}
+
+<li>
+<a href="{{ paper.url }}">
+{{ paper.title }}
+</a> {{ paper.cites }}
+</li>
+{% endfor %}
+
 </ul>
