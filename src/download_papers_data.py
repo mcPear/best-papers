@@ -25,8 +25,11 @@ async def get_ss(
         f"https://api.semanticscholar.org/graph/v1/paper/{id}?fields={fields_csv}"
     )
     # FIXME search for the paper by title if arxiv id doesn't work
+    # https://www.semanticscholar.org/product/api
     search_url = "https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_name}h&limit=1"
+    # https://api.semanticscholar.org/graph/v1/paper/search?query=SGPT%3A%20GPT%20Sentence%20Embeddings%20for%20Semantic%20Search&limit=1
     ss_id_url = "https://api.semanticscholar.org/graph/v1/paper/{ss_id}?fields=title"
+    # https://api.semanticscholar.org/graph/v1/paper/cf8235e0b592f52848c3dc4a9b76222c25d172cb?fields=title,embedding
     try:
         async with session.get(
             url=arxiv_id_url, headers={"x-api-key": api_key}

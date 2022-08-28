@@ -33,7 +33,6 @@ author:
   avatar: "/assets/profile.jpeg"
   bio: "ML practitioner, always willing to talk."
   location: "Poland"
-  # buymeacoffee: "https://www.buymeacoffee.com/mcPear"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
@@ -49,7 +48,6 @@ author:
       url: "https://www.buymeacoffee.com/mcPear"
 
 footer:
-  # buymeacoffee: "https://www.buymeacoffee.com/mcPear"
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"

@@ -9,10 +9,6 @@ author_profile: true
 
 I'm eager to know whether this site is beneficial to you! Let me know your thoughts on it via email or Linkedin.
 
-### Support
-
-Have I helped you become a better researcher? You may want to [buy me a coffe](https://www.buymeacoffee.com/mcPear). That supports my hobby and further website development.
-
 ### Concerning citation counts
 
 The website uses citation counts to determine "the best" scientific papers. However, citation counts have [significant drawbacks](https://www.quora.com/What-are-the-drawbacks-of-citation-count), so interpret them wisely. The data presented here is suitable for **general educational purposes** but is unlikely to be useful for advanced academic research.
