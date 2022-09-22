@@ -43,9 +43,9 @@ author:
     - label: "Mail"
       icon: "fa fa-fw fa-envelope"
       url: "mailto: maciek.gruszka@gmail.com"
-    - label: "Buy Me a Coffee"
-      icon: "fa fa-fw fa-coffee"
-      url: "https://www.buymeacoffee.com/mcPear"
+    # - label: "Buy Me a Coffee"
+    #   icon: "fa fa-fw fa-coffee"
+    #   url: "https://www.buymeacoffee.com/mcPear"
 
 footer:
   links:
@@ -58,9 +58,9 @@ footer:
     - label: "Mail"
       icon: "fa fa-fw fa-envelope"
       url: "mailto: maciek.gruszka@gmail.com"
-    - label: "Buy Me a Coffee"
-      icon: "fa fa-fw fa-coffee"
-      url: "https://www.buymeacoffee.com/mcPear"
+    # - label: "Buy Me a Coffee"
+    #   icon: "fa fa-fw fa-coffee"
+    #   url: "https://www.buymeacoffee.com/mcPear"
 
 atom_feed:
   hide: true
