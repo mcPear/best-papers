@@ -10,6 +10,14 @@ import asyncio
 import aiohttp
 from src.constants import *
 from os import environ
+import logging
+
+logging.basicConfig(
+    handlers=[logging.FileHandler("filename.log"), logging.StreamHandler()],
+    format="%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s",
+    datefmt="%H:%M:%S",
+    level=logging.INFO,
+)
 
 
 def get_short_id(id):
@@ -30,17 +38,17 @@ async def get_ss(
     # https://api.semanticscholar.org/graph/v1/paper/search?query=SGPT%3A%20GPT%20Sentence%20Embeddings%20for%20Semantic%20Search&limit=1
     ss_id_url = "https://api.semanticscholar.org/graph/v1/paper/{ss_id}?fields=title"
     # https://api.semanticscholar.org/graph/v1/paper/cf8235e0b592f52848c3dc4a9b76222c25d172cb?fields=title,embedding
+    response = None
     try:
         async with session.get(
             url=arxiv_id_url, headers={"x-api-key": api_key}
         ) as response:
             json_response = await response.json()
-            if any([field not in json_response for field in fields]):
-                print(response)
             return {field: json_response[field] for field in fields}
     except Exception as e:
-        print(e, "paper id: ", id)
-        traceback.print_exc()
+        error_message = f"Error downloading ss paper id: {id}\n Message:\n{e}\n Response:\n{response}"
+        logging.error(error_message)
+        traceback.print_exc()  # TODO put to error message
 
 
 async def _request_ss(ids, fields):
@@ -69,14 +77,16 @@ def parse_arxiv_paper(e):
 
 @retry(tries=10, delay=4)
 def request_arxiv(i, page_size):
-    url = f"http://export.arxiv.org/api/query?search_query=all:cs.CL&start={i*page_size}&max_results={page_size}&sortBy=submittedDate&sortOrder=descending"
-    r = requests.get(url).content
-    entry = xmltodict.parse(r)["feed"].get("entry")
+    start, end = i * page_size, (i + 1) * page_size
+    url = f"http://export.arxiv.org/api/query?search_query=all:cs.CL&start={start}&max_results={page_size}&sortBy=submittedDate&sortOrder=descending"
+    response = requests.get(url).content
+    entry = xmltodict.parse(response)["feed"].get("entry")
     if not entry:
-        print("Missing entry in request", str(r))
-        raise Exception(
-            f"Error requesting papers from {i*page_size} to {(i+1)*page_size}", r
+        error_message = (
+            f"Error requesting papers from {start} to {end}. Response: {response}"
         )
+        logging.error(error_message)
+        raise Exception()
     return entry
 
 
@@ -112,7 +122,9 @@ with sqlite3.connect(DATABASE_FILE_NAME) as con:
         cur = con.cursor()
         insert_data = []
         insert_missing_data = []
-        for arxiv_paper_dict, ss_paper_dict in tqdm(zip(arxiv_papers, ss_papers)):
+        for arxiv_paper_dict, ss_paper_dict in tqdm(
+            zip(arxiv_papers, ss_papers)
+        ):  # TODO make sure single ss failure affects only one paper
             id, title = itemgetter(*arxiv_fields)(arxiv_paper_dict)
             title = escape_string(title)
             if ss_paper_dict is not None:
@@ -125,9 +137,6 @@ with sqlite3.connect(DATABASE_FILE_NAME) as con:
         insert_missing_sql = f"INSERT OR REPLACE INTO missing_papers VALUES (?, ?)"
         cur.executemany(insert_missing_sql, insert_missing_data)
         con.commit()
+        logging.info(str(insert_data[-1]))
 
-    cur.execute(f"SELECT * FROM missing_papers")
-    rows = cur.fetchall()
-    print("Missing papers:")
-    for row in rows:
-        print(row)
+# FIXME PaLM occurs twice
