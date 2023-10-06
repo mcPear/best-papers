@@ -25,39 +25,33 @@ description: A charmingly simple website serving the best NLP papers.
 url: "https://thebestnlppapers.com"
 repository: "mcPear/best-papers"
 github_username: mcPear
-# logo: "https://github.githubassets.com/images/icons/emoji/unicode/2b50.png"
-# TODO staticman comments
 
 author:
   name: "Maciej Gruszczyński"
   avatar: "/assets/profile.jpeg"
-  bio: "ML practitioner, always willing to talk."
-  location: "Poland"
+  bio: "Data Scientist"
   links:
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/mcPear/best-papers"
     - label: "Linkedin"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
-    - label: "Mail"
-      icon: "fa fa-fw fa-envelope"
-      url: "mailto: maciek.gruszka@gmail.com"
-    # - label: "Buy Me a Coffee"
-    #   icon: "fa fa-fw fa-coffee"
-    #   url: "https://www.buymeacoffee.com/mcPear"
+    - label: "Medium"
+      icon: "fab fa-fw fa-medium"
+      url: https://maciekgruszczynski.medium.com/"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mcPear/best-papers"
 
 footer:
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/mcPear/best-papers"
+    - label: "Medium"
+      icon: "fab fa-fw fa-medium"
+      url: "https://maciekgruszczynski.medium.com/"
     - label: "Linkedin"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/maciej-gruszczy%C5%84ski-b92013155/"
-    - label: "Mail"
-      icon: "fa fa-fw fa-envelope"
-      url: "mailto: maciek.gruszka@gmail.com"
     # - label: "Buy Me a Coffee"
     #   icon: "fa fa-fw fa-coffee"
     #   url: "https://www.buymeacoffee.com/mcPear"
@@ -75,6 +69,7 @@ exclude:
   - Gemfile.lock
   - LICENSE
   - README.md
+  - vendor
 
 defaults:
   - scope:

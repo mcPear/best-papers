@@ -5,12 +5,10 @@ permalink: /about/
 author_profile: true
 ---
 
-### Your opinion is very valuable to me
+### Citation Counts Disclaimer
 
-I would love to hear your feedback on whether this site has been **beneficial to you**! Please let me know your thoughts via email or Linkedin.
+This website uses citation counts to determine "the best" scientific papers. Be aware of [significant drawbacks](https://www.quora.com/What-are-the-drawbacks-of-citation-count) of citation counts and interpret them wisely.
 
-### Concerning citation counts
+### Feedback
 
-This website uses citation counts to determine "the best" scientific papers. However, citation counts have [significant drawbacks](https://www.quora.com/What-are-the-drawbacks-of-citation-count), so interpret them wisely. The data presented here is suitable for **general educational purposes** but is unlikely to be useful for advanced academic research.
-
-### Thank you to arXiv for use of its open access interoperability.
+Please share your feedback about this website via Linkedin.

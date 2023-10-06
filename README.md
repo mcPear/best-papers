@@ -10,4 +10,6 @@ A charmingly simple website serving the best scientific papers in a given catego
 
 ## Build and serve
 
+`bundle install --path vendor/bundle`
+
 `bundle exec jekyll serve`
