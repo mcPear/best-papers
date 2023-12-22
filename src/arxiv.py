@@ -37,7 +37,14 @@ def parse_record(record):
     title = metadata["title"]
     categories = metadata["categories"].split(" ")
     year = get_year(metadata)
-    return {"id": id, "title": title, "categories": categories, "year": year}
+    abstract = metadata["abstract"]
+    return {
+        "id": id,
+        "title": title,
+        "categories": categories,
+        "year": year,
+        "abstract": abstract,
+    }
 
 
 def request_page(url):

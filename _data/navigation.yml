@@ -4,31 +4,31 @@ main:
 scope_nav:
 - children:
   - title: '2023'
-    url: /pages/2023/
+    url: /nlp/papers/2023/
   - title: '2022'
-    url: /pages/2022/
+    url: /nlp/papers/2022/
   - title: '2021'
-    url: /pages/2021/
+    url: /nlp/papers/2021/
   - title: '2020'
-    url: /pages/2020/
+    url: /nlp/papers/2020/
   - title: '2019'
-    url: /pages/2019/
+    url: /nlp/papers/2019/
   - title: '2018'
-    url: /pages/2018/
+    url: /nlp/papers/2018/
   - title: '2017'
-    url: /pages/2017/
+    url: /nlp/papers/2017/
   - title: '2016'
-    url: /pages/2016/
+    url: /nlp/papers/2016/
   - title: '2015'
-    url: /pages/2015/
+    url: /nlp/papers/2015/
   - title: '2014'
-    url: /pages/2014/
+    url: /nlp/papers/2014/
   - title: '2013'
-    url: /pages/2013/
+    url: /nlp/papers/2013/
   - title: The last 2 years
-    url: /pages/2/
+    url: /nlp/papers/2/
   - title: The last 5 years
-    url: /pages/5/
+    url: /nlp/papers/5/
   - title: From 2013
-    url: /pages/all/
-  title: Scope
+    url: /nlp/papers/all/
+  title: Select the scope

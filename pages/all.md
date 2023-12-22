@@ -1,18 +1,20 @@
 ---
 layout: single
-title: From 2013
-permalink: /pages/all/
+title: The best NLP papers from 2013 to now
+permalink: /nlp/papers/all/
 ---
 
-<span>Papers are ordered by citation count.</span>
+<div>
+{% for paper in site.data.papers_all %}
+    <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none">{{ paper.title }}</a></h4>
 
-<ul>
-    {% for paper in site.data.papers_all %}
-      <li>
-        <a href="{{ paper.url }}">
-            {{ paper.title }}
-        </a> {{ paper.cites }}
-      </li>
-    {% endfor %}
-</ul>
+    <p style="font-size: 0.8em; font-weight: bold;"> {{ paper.cites }} citations</p>
+
+    {% if paper.abstract != null %}
+    <div style="width: 100%; height: 200px; overflow-y: scroll">
+    <p style="font-size: 0.8em">{{ paper.abstract }}</p>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
 

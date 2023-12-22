@@ -22,17 +22,23 @@ def execute_many(sql, records):
 
 
 def escape_string(text):
-    return text.replace("'", "''")
+    return text.replace("'", "''") if text else text
 
 
 def unescape_string(text):
-    return text.replace("''", "'")
+    return text.replace("''", "'") if text else text
 
 
 def insert_or_replace(papers):
-    insert_sql = f"INSERT OR REPLACE INTO papers VALUES (?, ?, ?, ?)"
+    insert_sql = f"INSERT OR REPLACE INTO papers VALUES (?, ?, ?, ?, ?)"
     records = [
-        (paper["id"], paper["year"], escape_string(paper["title"]), None)
+        (
+            paper["id"],
+            paper["year"],
+            escape_string(paper["title"]),
+            None,
+            escape_string(paper["abstract"]),
+        )
         for paper in papers
     ]
 

@@ -1,25 +1,37 @@
 import json
 from src.database import create_connection, unescape_string
-from src.scope import MIN_YEAR, CURRENT_YEAR
+from src.scope import MIN_YEAR, CURRENT_YEAR, INDEX_PAGE_ID
 import yaml
 
-page_template = """---
+page_header_template = """---
 layout: single
 title: {title}
-permalink: /pages/{name}/
+permalink: /nlp/papers/{id}/
 ---
+"""
 
-<span>Papers are ordered by citation count.</span>
+index_page_header_template = """---
+layout: single
+title: {title}
+sidebar:
+  nav: "scope_nav"
+---
+"""
 
-<ul>
-    {% for paper in site.data.papers_{name} %}
-      <li>
-        <a href="{{ paper.url }}">
-            {{ paper.title }}
-        </a> {{ paper.cites }}
-      </li>
-    {% endfor %}
-</ul>
+page_content_template = """
+<div>
+{% for paper in site.data.papers_{id} %}
+    <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none">{{ paper.title }}</a></h4>
+
+    <p style="font-size: 0.8em; font-weight: bold;"> {{ paper.cites }} citations</p>
+
+    {% if paper.abstract != null %}
+    <div style="width: 100%; height: 200px; overflow-y: scroll">
+    <p style="font-size: 0.8em">{{ paper.abstract }}</p>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
 
 """
 
@@ -27,10 +39,33 @@ permalink: /pages/{name}/
 def get_scopes():
     scopes = []
     for year in reversed(range(MIN_YEAR, CURRENT_YEAR + 1)):
-        scopes.append((f"= {year}", str(year), str(year)))
-    scopes.append((f"> {CURRENT_YEAR - 2}", "2", "The last 2 years"))
-    scopes.append((f"> {CURRENT_YEAR - 5}", "5", "The last 5 years"))
-    scopes.append((f">= {MIN_YEAR}", "all", f"From {MIN_YEAR}"))
+        scopes.append(
+            (f"= {year}", str(year), str(year), f"The best NLP papers of {year}")
+        )
+    scopes.append(
+        (
+            f"> {CURRENT_YEAR - 2}",
+            "2",
+            "The last 2 years",
+            "The best NLP papers in the last 2 years",
+        )
+    )
+    scopes.append(
+        (
+            f"> {CURRENT_YEAR - 5}",
+            "5",
+            "The last 5 years",
+            "The best NLP papers in the last 5 years",
+        )
+    )
+    scopes.append(
+        (
+            f">= {MIN_YEAR}",
+            "all",
+            f"From {MIN_YEAR}",
+            f"The best NLP papers from {MIN_YEAR} to now",
+        )
+    )
     return scopes
 
 
@@ -49,31 +84,48 @@ def get_papers(connection, scope):
         {
             "url": get_paper_url(id),
             "title": unescape_string(title),
-            "cites": cites,
+            "cites": format_cites(cites),
+            "abstract": unescape_string(abstract),
+            "no": idx + 1,
         }
-        for id, year, title, cites in rows
+        for idx, (id, year, title, cites, abstract) in enumerate(rows)
     ]
     return papers
 
 
-def export_papers(papers, name):
-    with open(f"_data/papers_{name}.json", "w") as f:
+def format_cites(cites):
+    return format(cites, ",").replace(",", " ") if cites else cites
+
+
+def export_papers(papers, id):
+    with open(f"_data/papers_{id}.json", "w") as f:
         json.dump(papers, f)
 
 
-def build_page(name, title):
-    with open(f"pages/{name}.md", "w") as f:
-        f.write(page_template.replace("{title}", title).replace("{name}", name))
+def build_page(id, title):
+    with open(f"pages/{id}.md", "w") as f:
+        page_header = page_header_template.replace("{title}", title).replace("{id}", id)
+        page_content = page_content_template.replace("{id}", id)
+        page = page_header + page_content
+        f.write(page)
+
+
+def build_index_page(id, title):
+    with open(f"index.markdown", "w") as f:
+        page_header = index_page_header_template.replace("{title}", title)
+        page_content = page_content_template.replace("{id}", id)
+        page = page_header + page_content
+        f.write(page)
 
 
 def build_navigation(scopes):
     navigation = {
         "scope_nav": [
             {
-                "title": "Scope",
+                "title": "Select the scope",
                 "children": [
-                    {"title": title, "url": f"/pages/{name}/"}
-                    for scope, name, title in scopes
+                    {"title": name, "url": f"/nlp/papers/{id}/"}
+                    for _scope, id, name, _title in scopes
                 ],
             }
         ],
@@ -89,8 +141,10 @@ def build_navigation(scopes):
 def generate():
     with create_connection() as connection:
         scopes = get_scopes()
-        for scope, name, title in scopes:
+        for scope, id, _name, title in scopes:
             papers = get_papers(connection, scope)
-            export_papers(papers, name)
-            build_page(name, title)
+            export_papers(papers, id)
+            build_page(id, title)
+            if id == INDEX_PAGE_ID:
+                build_index_page(id, title)
         build_navigation(scopes)

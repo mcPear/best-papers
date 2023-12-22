@@ -7,6 +7,7 @@ from src.database import select_papers, update_citation_count
 from tqdm import tqdm
 from time import time, sleep
 import urllib
+from retry import retry
 
 API_KEY = environ["SS_API_KEY"]
 
@@ -84,6 +85,7 @@ async def fetch_paper(paper, session):
     except Exception as e:
         error_message = f"Error fetching paper from Semantic Scholar.\nId: {id}\n Message:\n{e}\nResponse:\nTraceback:\n{traceback.format_exc()}"
         logging.error(error_message)
+        raise e
 
 
 async def _fetch_papers(papers):
@@ -91,6 +93,11 @@ async def _fetch_papers(papers):
         return await asyncio.gather(*[fetch_paper(paper, session) for paper in papers])
 
 
+@retry(
+    tries=5,
+    delay=5,
+    jitter=(1, 3),
+)
 def fetch_papers(papers):
     return asyncio.run(_fetch_papers(papers))
 
