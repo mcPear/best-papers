@@ -29,3 +29,37 @@
 <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5" />
 <meta name="msapplication-TileColor" content="#da532c" />
 <meta name="theme-color" content="#ffffff" />
+
+<!-- abstract -->
+<style>
+  .abstract {
+    font-size: 0.8em;
+    height: 4.5em;
+    overflow: hidden;
+  }
+
+  .abstract:hover {
+    background-color: rgba(0, 0, 255, 0.05);
+  }
+
+  .cites {
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  window.onload = function () {
+    var abstracts = document.getElementsByClassName("abstract");
+    for (var i = 0; i < abstracts.length; i++) {
+      var abstract = abstracts[i];
+      abstract.onclick = function () {
+        if (this.style.height == "auto") {
+          this.style.height = "4.5em";
+        } else {
+          this.style.height = "auto";
+        }
+      };
+    }
+  };
+</script>

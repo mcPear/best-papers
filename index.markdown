@@ -9,11 +9,11 @@ sidebar:
 {% for paper in site.data.papers_2023 %}
     <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none">{{ paper.title }}</a></h4>
 
-    <p style="font-size: 0.8em; font-weight: bold;"> {{ paper.cites }} citations</p>
+    <p class="cites"> {{ paper.cites }} citations</p>
 
     {% if paper.abstract != null %}
-    <div style="width: 100%; height: 200px; overflow-y: scroll">
-    <p style="font-size: 0.8em">{{ paper.abstract }}</p>
+    <div class="abstract">
+    <p>{{ paper.abstract }}</p>
     </div>
     {% endif %}
 {% endfor %}
