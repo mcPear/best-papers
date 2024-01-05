@@ -1,0 +1,1 @@
+The best NLP papers of 2020 include "Language Models are Few-Shot Learners" with 19,038 citations, "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations" with 3,052 citations, and "Longformer: The Long-Document Transformer" with 2,278 citations, among others.

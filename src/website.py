@@ -1,7 +1,9 @@
 import json
 from src.database import create_connection, unescape_string
-from src.scope import MIN_YEAR, CURRENT_YEAR, INDEX_PAGE_ID
+from src.scope import MIN_YEAR, MAX_YEAR
 import yaml
+
+INDEX_PAGE_ID = str(MAX_YEAR)
 
 page_header_template = """---
 layout: single
@@ -20,6 +22,7 @@ sidebar:
 
 page_content_template = """
 <div>
+<p class="featured_snippet">{featured_snippet}</p>
 {% for paper in site.data.papers_{id} %}
     <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none">{{ paper.title }}</a></h4>
 
@@ -38,13 +41,13 @@ page_content_template = """
 
 def get_scopes():
     scopes = []
-    for year in reversed(range(MIN_YEAR, CURRENT_YEAR + 1)):
+    for year in reversed(range(MIN_YEAR, MAX_YEAR + 1)):
         scopes.append(
             (f"= {year}", str(year), str(year), f"The best NLP papers of {year}")
         )
     scopes.append(
         (
-            f"> {CURRENT_YEAR - 2}",
+            f"> {MAX_YEAR - 2}",
             "2",
             "The last 2 years",
             "The best NLP papers in the last 2 years",
@@ -52,7 +55,7 @@ def get_scopes():
     )
     scopes.append(
         (
-            f"> {CURRENT_YEAR - 5}",
+            f"> {MAX_YEAR - 5}",
             "5",
             "The last 5 years",
             "The best NLP papers in the last 5 years",
@@ -105,7 +108,9 @@ def export_papers(papers, id):
 def build_page(id, title):
     with open(f"pages/{id}.md", "w") as f:
         page_header = page_header_template.replace("{title}", title).replace("{id}", id)
-        page_content = page_content_template.replace("{id}", id)
+        page_content = page_content_template.replace("{id}", id).replace(
+            "{featured_snippet}", get_featured_snippet(id)
+        )
         page = page_header + page_content
         f.write(page)
 
@@ -113,9 +118,16 @@ def build_page(id, title):
 def build_index_page(id, title):
     with open(f"index.markdown", "w") as f:
         page_header = index_page_header_template.replace("{title}", title)
-        page_content = page_content_template.replace("{id}", id)
+        page_content = page_content_template.replace("{id}", id).replace(
+            "{featured_snippet}", get_featured_snippet(id)
+        )
         page = page_header + page_content
         f.write(page)
+
+
+def get_featured_snippet(id):
+    with open(f"featured_snippets/{id}.txt", "r") as f:
+        return f.read()
 
 
 def build_navigation(scopes):

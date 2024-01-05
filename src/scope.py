@@ -1,6 +1,6 @@
 from datetime import date
 
 CURRENT_YEAR = date.today().year
+MAX_YEAR = 2023  # TODO make it dependent on current year quarter
 YEARS_COUNT = 10
-MIN_YEAR = CURRENT_YEAR - YEARS_COUNT
-INDEX_PAGE_ID = "2023"
+MIN_YEAR = MAX_YEAR - YEARS_COUNT

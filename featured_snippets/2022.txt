@@ -1,0 +1,1 @@
+The best NLP papers of 2022 cover a range of topics including training language models to follow instructions, scaling language models, eliciting reasoning in large language models, and personalizing text-to-image generation. These papers explore the capabilities and limitations of language models and propose innovative methods for improving their performance.

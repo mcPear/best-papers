@@ -1,0 +1,1 @@
+The best NLP papers in the last 5 years include "Language Models are Few-Shot Learners", "RoBERTa: A Robustly Optimized BERT Pretraining Approach", "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer", and "HuggingFace's Transformers: State-of-the-art Natural Language Processing". These papers have made significant contributions to the field of NLP.

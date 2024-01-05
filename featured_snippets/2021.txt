@@ -1,0 +1,1 @@
+The best NLP papers of 2021 include "Prefix-Tuning: Optimizing Continuous Prompts for Generation", "LoRA: Low-Rank Adaptation of Large Language Models", "Scaling Up Visual and Vision-Language Representation Learning With Noisy Text Supervision", and "The Power of Scale for Parameter-Efficient Prompt Tuning", among others.
