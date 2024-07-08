@@ -1,6 +1,6 @@
 ---
 layout: single
-title: The best NLP papers from 2013 to now
+title: The best NLP papers from 2014 to now
 permalink: /nlp/papers/all/
 ---
 
