@@ -3,7 +3,7 @@ import xmltodict
 from retry import retry
 from src.logging_config import logging
 from datetime import datetime
-from src.database import insert_or_replace, escape_string
+from src.database import insert_or_replace, create_table
 from time import time, sleep
 from src.scope import MIN_YEAR
 
@@ -146,6 +146,8 @@ def delay(last_fetch_time):
 
 
 def download(filters=DEFAULT_FILTERS):
+    create_table()
+
     resumption_token = None
     last_fetch_time = 0
     while True:

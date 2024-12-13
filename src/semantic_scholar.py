@@ -1,109 +1,124 @@
 import traceback
-import asyncio
-import aiohttp
+from urllib import request, parse, error
+import json
 from os import environ
 import logging
-from src.database import select_papers, update_citation_count
+from src.database import (
+    select_papers_missing_citations_count,
+    update_citation_count,
+    update_semantic_scholar_id,
+    select_papers_with_semantic_scholar_id,
+)
 from tqdm import tqdm
 from time import time, sleep
 import urllib
 from retry import retry
 
 API_KEY = environ["SS_API_KEY"]
-
-# 100 requests per second is API limit (but in worst case scenario we make 3 calls per paper)
-BATCH_SIZE = 33
+API_URL = "https://api.semanticscholar.org/graph/v1"
+BATCH_SIZE = 500
 DELAY_TIME = 1
 
+# TODO introduce last_update_date to handle interruptions and reruns
 
-async def fetch_paper_by_semantic_scholar_id(id, semantic_scholar_id, session):
-    url = f"https://api.semanticscholar.org/graph/v1/paper/{semantic_scholar_id}?fields=citationCount"
-    response = None
-    async with session.get(url=url, headers={"x-api-key": API_KEY}) as response:
-        status = response.status
-        response = await response.json()
-        if status == 404:
-            logging.info(
-                f"Paper {id} not found by Semantic Scholar id {semantic_scholar_id}."
-            )
-            return {"id": id, "citationCount": None}
-        if "citationCount" in response:
-            return {"id": id, "citationCount": response["citationCount"]}
-        raise Exception(
-            f"Unexpected response from Semantic Scholar:\n{response}\nURL: {url}"
+
+class ShouldRetryHTTPError(error.HTTPError):
+    def __init__(self, error):
+        super().__init__(error.url, error.code, error.msg, error.hdrs, error.fp)
+
+
+@retry(ShouldRetryHTTPError, tries=5, delay=DELAY_TIME * 2)
+def make_request(url, method="GET", data=None):
+    try:
+        headers = {"x-api-key": API_KEY}
+        if data:
+            headers["Content-Type"] = "application/json"
+            data = json.dumps(data).encode("utf-8")
+
+        req = request.Request(url, data=data, headers=headers, method=method)
+        with request.urlopen(req) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except error.HTTPError as e:
+        if e.code == 429:
+            raise ShouldRetryHTTPError(e)
+        else:
+            raise e
+
+
+def fetch_papers_by_ids(papers):
+    ids = [
+        paper.get("semantic_scholar_id") or f"ARXIV:{paper['id']}" for paper in papers
+    ]
+    all_papers_missing_http_code = (
+        400  # when all requested paper ids are missing, API returns 400
+    )
+
+    result = None
+    try:
+        url = f"{API_URL}/paper/batch?fields=citationCount"
+        results = make_request(
+            url,
+            method="POST",
+            data={"ids": ids},
         )
+    except error.HTTPError as e:
+        if e.code == all_papers_missing_http_code:
+            results = [None] * len(papers)
+        else:
+            raise Exception(f"Failed batch request with status {e.code}")
+
+    found_papers = []
+    for paper, result in zip(papers, results):
+        if result:
+            found_papers.append(
+                {"id": paper["id"], "citationCount": result["citationCount"]}
+            )
+        else:
+            logging.info(
+                f'Paper "{paper["title"]}" (id: {paper["id"]}) not found by ID in Semantic Scholar.'
+            )
+
+    return found_papers
 
 
-async def fetch_paper_by_title(id, title, session):
-    encoded_title = urllib.parse.quote(title)
-    url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_title}&limit=1"
-    response = None
-    async with session.get(url=url, headers={"x-api-key": API_KEY}) as response:
-        status = response.status
-        response = await response.json()
-        if status == 404 or "total" in response and response["total"] == 0:
+def fetch_paper_id_by_title(id, title):
+    try:
+        url = f"{API_URL}/paper/search/match?query={parse.quote(title)}"
+        data = make_request(url)
+    except error.HTTPError as e:
+        if e.code == 404:
             logging.info(
                 f'Paper {id} "{title}" not found by title in Semantic Scholar.'
             )
-            return {"id": id, "citationCount": None}
-        if "total" in response:
-            semantic_scholar_id = response["data"][0]["paperId"]
-            return await fetch_paper_by_semantic_scholar_id(
-                id, semantic_scholar_id, session
-            )
-        raise Exception(
-            f"Unexpected response from Semantic Scholar:\n{response}\nURL: {url}"
-        )
-
-
-async def fetch_paper_by_id(id, session):
-    url = f"https://api.semanticscholar.org/graph/v1/paper/{'arxiv:' + id}?fields=citationCount"
-    response = None
-    async with session.get(url=url, headers={"x-api-key": API_KEY}) as response:
-        status = response.status
-        response = await response.json()
-        if status == 404:
-            logging.info(f"Paper {id} not found by id in Semantic Scholar.")
-            return {"id": id, "citationCount": None}
-        if "citationCount" in response:
-            return {"id": id, "citationCount": response["citationCount"]}
-        raise Exception(
-            f"Unexpected response from Semantic Scholar:\n{response}\nURL: {url}"
-        )
-
-
-async def fetch_paper(paper, session):
-    id = paper["id"]
-    title = paper["title"]
-
-    try:
-        paper = await fetch_paper_by_id(id, session)
-        if paper["citationCount"] is None:
-            return await fetch_paper_by_title(id, title, session)
-        return paper
-
-    except Exception as e:
-        error_message = f"Error fetching paper from Semantic Scholar.\nId: {id}\n Message:\n{e}\nResponse:\nTraceback:\n{traceback.format_exc()}"
-        logging.error(error_message)
+            return None
         raise e
 
+    matches = data.get("data")
+    if not matches:
+        logging.info(f'Paper {id} "{title}" not found by title in Semantic Scholar.')
+        return None
+    else:
+        return {"id": id, "semantic_scholar_id": matches[0]["paperId"]}
 
-async def _fetch_papers(papers):
-    async with aiohttp.ClientSession() as session:
-        return await asyncio.gather(*[fetch_paper(paper, session) for paper in papers])
 
+def fetch_missing_papers_by_titles(papers):
+    results = []
+    last_fetch_time = 0
 
-@retry(
-    tries=5,
-    delay=5,
-    jitter=(1, 3),
-)
-def fetch_papers(papers):
-    return asyncio.run(_fetch_papers(papers))
+    for paper in tqdm(papers):
+        try:
+            delay(last_fetch_time)
+            result = fetch_paper_by_title(paper["id"], paper["title"])
+            last_fetch_time = time()
+            if result:
+                results.append(result)
+        except Exception as e:
+            logging.error(f"Error searching paper by title: {paper['id']}, {str(e)}")
+    return results
 
 
 def get_batches(l):
-    return [l[i : i + BATCH_SIZE] for i in range(0, len(l), BATCH_SIZE)]
+    return tqdm([l[i : i + BATCH_SIZE] for i in range(0, len(l), BATCH_SIZE)])
 
 
 def store_papers(papers):
@@ -118,16 +133,62 @@ def delay(last_fetch_time):
 
 
 def get_batched_papers():
-    papers = select_papers()
+    papers = select_papers_missing_citations_count()
     batches = get_batches(papers)
-    return tqdm(batches)
+    return batches, len(papers)
+
+
+def fetch_citation_counts_by_arxiv_id():
+    last_fetch_time = 0
+    batched_papers, papers_count = get_batched_papers()
+
+    logging.info(f"Fetching {papers_count} papers by arxiv ID...")
+    for batch in batched_papers:
+        delay(last_fetch_time)
+        found_papers = fetch_papers_by_ids(batch)
+        last_fetch_time = time()
+        store_papers(found_papers)
+
+
+def fetch_semantic_scholar_ids_by_titles():
+    last_fetch_time = 0
+    papers = select_papers_missing_citations_count()
+    if not papers:
+        logging.info("No papers need semantic scholar ID lookup.")
+        return
+
+    logging.info(f"Fetching semantic scholar IDs for {len(papers)} papers by title...")
+    results = []
+    delay(DELAY_TIME)
+    for paper in tqdm(papers):
+        delay(last_fetch_time)
+        result = fetch_paper_id_by_title(paper["id"], paper["title"])
+        last_fetch_time = time()
+        if result:
+            results.append(result)
+    update_semantic_scholar_id(results)
+
+
+def fetch_citation_counts_by_semantic_ids():
+    last_fetch_time = 0
+    papers = select_papers_with_semantic_scholar_id()
+    if not papers:
+        logging.info("No papers need citation count updates.")
+        return
+
+    logging.info(
+        f"Fetching citation counts for {len(papers)} papers using Semantic Scholar IDs..."
+    )
+    delay(DELAY_TIME)
+    for batch in get_batches(papers):
+        delay(last_fetch_time)
+        found_papers = fetch_papers_by_ids(batch)
+        last_fetch_time = time()
+        store_papers(found_papers)
 
 
 def download():
-    last_fetch_time = 0
-    batched_papers = get_batched_papers()
-    for batch in batched_papers:
-        delay(last_fetch_time)
-        papers = fetch_papers(batch)
-        last_fetch_time = time()
-        store_papers(papers)
+    fetch_citation_counts_by_arxiv_id()
+    fetch_semantic_scholar_ids_by_titles()
+    fetch_citation_counts_by_semantic_ids()
+    logging.info("Finished fetching citation counts from Semantic Scholar.")

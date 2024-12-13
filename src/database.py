@@ -6,12 +6,13 @@ def create_connection():
     return sqlite3.connect(environ["DATABASE_FILE_NAME"])
 
 
-def create_table(connection):
-    cur = connection.cursor()
-    cur.execute(
-        """CREATE TABLE IF NOT EXISTS papers (id text PRIMARY KEY, year int, title text, citation_count int)"""
-    )
-    connection.commit()
+def create_table():
+    with create_connection() as connection:
+        cur = connection.cursor()
+        cur.execute(
+            """CREATE TABLE IF NOT EXISTS papers (id text PRIMARY KEY, year int, title text, citation_count int, abstract text, semantic_scholar_id text)"""
+        )
+        connection.commit()
 
 
 def execute_many(sql, records):
@@ -30,7 +31,7 @@ def unescape_string(text):
 
 
 def insert_or_replace(papers):
-    insert_sql = f"INSERT OR REPLACE INTO papers VALUES (?, ?, ?, ?, ?)"
+    insert_sql = f"INSERT OR REPLACE INTO papers VALUES (?, ?, ?, ?, ?, ?)"
     records = [
         (
             paper["id"],
@@ -38,6 +39,7 @@ def insert_or_replace(papers):
             escape_string(paper["title"]),
             None,
             escape_string(paper["abstract"]),
+            None,
         )
         for paper in papers
     ]
@@ -52,9 +54,28 @@ def update_citation_count(papers):
     execute_many(update_sql, records)
 
 
-def select_papers(columns=["id", "title"]):
+def select_papers_missing_citations_count(columns=["id", "title"]):
     with create_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(f"SELECT {', '.join(columns)} FROM papers")
+        cursor.execute(
+            f"SELECT {', '.join(columns)} FROM papers WHERE citation_count IS NULL"
+        )
+        tuples = cursor.fetchall()
+        return [dict(zip(columns, tuple)) for tuple in tuples]
+
+
+def update_semantic_scholar_id(papers):
+    update_sql = "UPDATE papers SET semantic_scholar_id = ? WHERE id = ?"
+    records = [(paper["semantic_scholar_id"], paper["id"]) for paper in papers]
+
+    execute_many(update_sql, records)
+
+
+def select_papers_with_semantic_scholar_id(columns=["id", "semantic_scholar_id"]):
+    with create_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute(
+            f"SELECT {', '.join(columns)} FROM papers WHERE semantic_scholar_id IS NOT NULL"
+        )
         tuples = cursor.fetchall()
         return [dict(zip(columns, tuple)) for tuple in tuples]
