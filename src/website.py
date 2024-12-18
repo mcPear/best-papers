@@ -24,7 +24,7 @@ page_content_template = """
 <div>
 <p class="featured_snippet">{featured_snippet}</p>
 {% for paper in site.data.papers_{id} %}
-    <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none">{{ paper.title }}</a></h4>
+    <h4>{{ paper.no }}. <a href="{{ paper.url }}" style="text-decoration:none" target="_blank">{{ paper.title }}</a></h4>
 
     <p class="cites"> {{ paper.cites }} citations</p>
 
