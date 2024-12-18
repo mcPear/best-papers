@@ -79,7 +79,7 @@ def get_paper_url(id):
 def get_papers(connection, scope):
     cursor = connection.cursor()
     cursor.execute(
-        f"SELECT * FROM papers where papers.year {scope} order by citation_count desc limit 100"
+        f"SELECT id, title, citation_count, abstract FROM papers where papers.year {scope} order by citation_count desc limit 100"
     )
     rows = cursor.fetchall()
     connection.commit()
@@ -91,7 +91,7 @@ def get_papers(connection, scope):
             "abstract": unescape_string(abstract),
             "no": idx + 1,
         }
-        for idx, (id, year, title, cites, abstract) in enumerate(rows)
+        for idx, (id, title, cites, abstract) in enumerate(rows)
     ]
     return papers
 
