@@ -3,6 +3,8 @@ main:
   url: /about/
 scope_nav:
 - children:
+  - title: '2025'
+    url: /nlp/papers/2025/
   - title: '2024'
     url: /nlp/papers/2024/
   - title: '2023'
@@ -23,12 +25,10 @@ scope_nav:
     url: /nlp/papers/2016/
   - title: '2015'
     url: /nlp/papers/2015/
-  - title: '2014'
-    url: /nlp/papers/2014/
   - title: The last 2 years
     url: /nlp/papers/2/
   - title: The last 5 years
     url: /nlp/papers/5/
-  - title: From 2014
+  - title: From 2015
     url: /nlp/papers/all/
   title: Select the scope

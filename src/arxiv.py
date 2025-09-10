@@ -6,13 +6,14 @@ from datetime import datetime
 from src.database import insert_or_replace, create_table
 from time import time, sleep
 from src.scope import MIN_YEAR
+from urllib.parse import unquote
 
-DEFAULT_FILTERS = {"min_year": MIN_YEAR, "category": "cs.CL"}
+DEFAULT_FILTERS = {"min_year": MIN_YEAR}
 
 START_URL = (
-    "https://export.arxiv.org/oai2?verb=ListRecords&set=cs&metadataPrefix=arXivRaw"
+    "https://oaipmh.arxiv.org/oai?verb=ListRecords&set=cs:cs:CL&metadataPrefix=arXivRaw"
 )
-RESUMPTION_URL = "https://export.arxiv.org/oai2?verb=ListRecords&resumptionToken={}"
+RESUMPTION_URL = "https://oaipmh.arxiv.org/oai?verb=ListRecords&resumptionToken={}"
 DELAY_TIME = 5
 
 
@@ -66,12 +67,7 @@ def parse_records(records):
 
 
 def filter_records(records, filters):
-    return [
-        record
-        for record in records
-        if record["year"] >= filters["min_year"]
-        and filters["category"] in record["categories"]
-    ]
+    return [record for record in records if record["year"] >= filters["min_year"]]
 
 
 def get_filtered_records(content, filters):
@@ -86,22 +82,14 @@ def get_resumption_token(content):
     return list_records["resumptionToken"]
 
 
-def log_progress(content):
-    resumption_token = get_resumption_token(content)
-    page_size = len(get_records(content))
-    cursor = int(resumption_token["@cursor"])
-    complete_list_size = int(resumption_token["@completeListSize"])
-    current_records_count = cursor + page_size
-    progress_percent = current_records_count / complete_list_size * 100
-    logging.info(
-        f"Progress: {current_records_count}/{complete_list_size} {progress_percent:.1f}%"
-    )
+def log_progress(records):
+    max_year = max([record["year"] for record in records])
+    logging.info(f"Progress: year {max_year}")
 
 
 def get_resumption_token_text(content):
     resumption_token = get_resumption_token(content)
-    resumption_token_text = resumption_token.get("#text")
-    logging.info(f"Resumption token: {resumption_token_text}")
+    resumption_token_text = resumption_token.get("#text") if resumption_token else None
     return resumption_token_text
 
 
@@ -128,7 +116,7 @@ def fetch_page(filters, resumption_token=None):
     content = request_page(url)
     handle_wait_request(content)
     records = get_filtered_records(content, filters)
-    log_progress(content)
+    log_progress(records)
     resumption_token = get_resumption_token_text(content)
 
     return (records, resumption_token)

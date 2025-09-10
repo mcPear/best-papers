@@ -3,7 +3,7 @@
 A charmingly simple website serving the best scientific papers in a given category.
 
 ## Update papers data
-`rye run archiv` to download NLP papers from arXiv
+`rye run arxiv` to download NLP papers from arXiv
 
 `rye run semantic-scholar` to get citation counts for the papers from Semantic Scholar
 
@@ -16,6 +16,6 @@ A charmingly simple website serving the best scientific papers in a given catego
 
 ## Build and serve locally
 
-`bundle install --path vendor/bundle`
+`bundle install`
 
 `bundle exec jekyll serve`
